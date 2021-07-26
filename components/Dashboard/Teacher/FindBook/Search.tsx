@@ -1,7 +1,7 @@
 import { Row, Button, Input, useInput } from "@geist-ui/react";
 import { FiSearch } from "react-icons/fi";
-import { useEffect, useState } from "react";
-import type { Book } from "type";
+import { useState } from "react";
+import type { Book } from "types";
 
 type SearchProps = {
   setBookList: (books: Book[]) => void;

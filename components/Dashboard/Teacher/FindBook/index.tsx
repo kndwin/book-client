@@ -1,9 +1,9 @@
 import { Grid, useModal } from "@geist-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BookModal from "./BookModal";
 import BookCard from "./BookCard";
 import Search from "./Search";
-import type { Book } from "type";
+import type { Book } from "types";
 
 type FindBookProps = {
   bookList: Book[];

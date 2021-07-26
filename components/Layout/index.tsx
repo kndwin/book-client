@@ -1,12 +1,19 @@
-import { Button, Page, Text } from "@geist-ui/react";
-import { FaGoogle } from "react-icons/fa";
+import { Row, Link, Avatar, Button, Page, Text } from "@geist-ui/react";
+import { FaGoogle, FaArrowLeft } from "react-icons/fa";
+import { signIn, signOut, useSession } from "next-auth/client";
 
 type LayoutProps = {
   children: React.ReactNode;
-  isSigned?: boolean;
+  isSignedIn?: boolean;
+  isSignUp?: boolean;
 };
 
-export default function Layout({ children, isSigned = true }: LayoutProps) {
+export default function Layout({
+  children,
+  isSignedIn = false,
+  isSignUp = false,
+}: LayoutProps) {
+  const [session, loading] = useSession();
   return (
     <Page size="large">
       <Page.Header
@@ -19,13 +26,74 @@ export default function Layout({ children, isSigned = true }: LayoutProps) {
           justifyContent: "space-between",
         }}
       >
-        <h2>dofie</h2>
-        {isSigned ? (
-          <Button auto type="secondary" icon={<FaGoogle />}>
+        <Link href={isSignedIn ? "/dashboard" : "/"}>
+          <Text h2>dofie</Text>
+        </Link>
+        {!isSignUp && !isSignedIn && (
+          <Button
+            auto
+            onClick={() =>
+              signIn("google", {
+                callbackUrl: `${process.env.NEXTAUTH_URL}`,
+              })
+            }
+            ghost
+            size="small"
+            type="error"
+            icon={<FaGoogle />}
+          >
             <Text b>Sign in</Text>
           </Button>
-        ) : (
-          <Text b>Welcome, Kevin</Text>
+        )}
+        {!isSignUp && isSignedIn && (
+          <Row style={{ alignItems: "center" }}>
+            {loading ? (
+              <Text>Loading</Text>
+            ) : (
+              <Row style={{ alignItems: "center" }}>
+                <Avatar
+                  src={
+                    // @ts-ignore
+                    session?.user?.image?.toString()
+                  }
+                />
+                <Text b style={{ margin: "0 1em" }}>
+                  Welcome,{" "}
+                  {
+                    // @ts-ignore
+                    session?.user?.name?.split(" ")[0]
+                  }
+                </Text>
+              </Row>
+            )}
+            <Button
+              auto
+              size="small"
+              onClick={() =>
+                signOut({ callbackUrl: `${process.env.NEXTAUTH_URL}` })
+              }
+              type="secondary"
+            >
+              <Text b>Sign out</Text>
+            </Button>
+          </Row>
+        )}
+        {isSignUp && (
+          <Row style={{ alignItems: "center" }}>
+            <Avatar
+              src={
+                // @ts-ignore
+                session?.user?.image?.toString()
+              }
+            />
+            <Text b style={{ margin: "0 1em" }}>
+              Welcome,{" "}
+              {
+                // @ts-ignore
+                session?.user?.name?.split(" ")[0]
+              }
+            </Text>
+          </Row>
         )}
       </Page.Header>
       <Page.Content>{children}</Page.Content>

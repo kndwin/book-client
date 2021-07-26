@@ -1,9 +1,8 @@
 import { useMutation } from "@apollo/client";
-import { Input, useToasts, Spacer, Tag, Modal, Text } from "@geist-ui/react";
-import { ADD_BOOK, EDIT_BOOK, GET_BOOKS } from "graphql/queries";
+import { useToasts, Spacer, Tag, Modal, Text } from "@geist-ui/react";
+import { ADD_BOOK } from "graphql/queries";
 import { useRouter } from "next/dist/client/router";
-
-import type { Book } from "type";
+import type { Book } from "types";
 
 type BookModalProps = {
   setVisible: (visible: boolean) => void;
@@ -20,7 +19,7 @@ export default function BookModal({
   const [, setToast] = useToasts();
   const [addBook] = useMutation(ADD_BOOK, {
     onCompleted: () =>
-      setToast({ text: "Success! Book added", type: "default" }),
+      setToast({ text: "Success! Book added", type: "secondary" }),
     onError: (e) => console.log(JSON.stringify(e, null, 2)),
     errorPolicy: "all",
   });

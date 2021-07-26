@@ -6,20 +6,23 @@ import {
   InMemoryCache,
   NormalizedCacheObject,
 } from "@apollo/client";
+import { Provider as NextAuthProvider } from "next-auth/client";
 import "styles/globals.css";
 
-const client = new ApolloClient<NormalizedCacheObject>({
+export const client = new ApolloClient<NormalizedCacheObject>({
   uri: "https://books-graphql.up.railway.app/",
   cache: new InMemoryCache(),
 });
 
 export default function Application({ Component, pageProps }: AppProps) {
   return (
-    <ApolloProvider client={client}>
-      <GeistProvider>
-        <CssBaseline />
-        <Component {...pageProps} />
-      </GeistProvider>
-    </ApolloProvider>
+    <NextAuthProvider session={pageProps.session}>
+      <ApolloProvider client={client}>
+        <GeistProvider>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </GeistProvider>
+      </ApolloProvider>
+    </NextAuthProvider>
   );
 }

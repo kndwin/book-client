@@ -1,5 +1,5 @@
 import { Modal, Fieldset, Button, Text } from "@geist-ui/react";
-import type { BookInput } from "type";
+import type { BookInput } from "types";
 
 type RemoveConfirmationModalProps = {
   openConfirmationModal: boolean;

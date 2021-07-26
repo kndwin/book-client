@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { Table, Button, useToasts } from "@geist-ui/react";
 import { DELETE_BOOK, EDIT_BOOK, GET_BOOKS } from "graphql/queries";
 import { useEffect, useState } from "react";
-import type { BookInput } from "type";
+import type { BookInput } from "types";
 import EditBookModal from "./EditBookModal";
 import RemoveConfirmationModal from "./RemoveConfirmationModal";
 
@@ -20,18 +20,27 @@ export default function SavedBooks({ forceUpdate }: SavedBooksProps) {
     refetchQueries: [{ query: GET_BOOKS }],
     onCompleted: () =>
       setToast({
-        type: "default",
+        type: "error",
         text: `${bookDetails?.title} - ${bookDetails?.authors} is removed`,
       }),
     onError: (e) => console.log(JSON.stringify(e, null, 2)),
     errorPolicy: "all",
   });
-  const [editBook] = useMutation(EDIT_BOOK);
+  const [editBook] = useMutation(EDIT_BOOK, {
+    refetchQueries: [{ query: GET_BOOKS }],
+    onCompleted: () =>
+      setToast({
+        type: "secondary",
+        text: `${bookDetails?.title} - ${bookDetails?.authors} is edited`,
+      }),
+    onError: (e) => console.log(JSON.stringify(e, null, 2)),
+    errorPolicy: "all",
+  });
   const [, setToast] = useToasts();
 
   const removeBook = () => {
     deleteBook({
-      variables: { deleteBookId: bookDetails?.id },
+      variables: { id: bookDetails?.id },
     });
     setOpenConfirmationModal(false);
   };
@@ -52,7 +61,6 @@ export default function SavedBooks({ forceUpdate }: SavedBooksProps) {
     const loadEditModal = () => {
       setBookDetails(rowData.rowValue);
       setEditModal(true);
-      console.log(rowData.rowValue);
     };
     return (
       <Button type="secondary" onClick={() => loadEditModal()} auto size="mini">
@@ -82,12 +90,10 @@ export default function SavedBooks({ forceUpdate }: SavedBooksProps) {
   }, [data]);
 
   if (error) {
-    console.error(error);
     return null; // TODO: Pop error modal
   }
 
   if (loading) {
-    console.log(`Loading: ${loading}`);
     return null; // TODO: Make a loading component
   }
 

@@ -24,10 +24,9 @@ export const ADD_BOOK = gql`
   }
 `;
 
-// TODO
 export const EDIT_BOOK = gql`
-  mutation EditBookMutation($editBookInput: BookInput) {
-    editBook(input: $editBookInput) {
+  mutation EditBookMutation($editBookId: String!, $editBookInput: BookInput) {
+    editBook(id: $editBookId, input: $editBookInput) {
       id
     }
   }
@@ -40,5 +39,23 @@ export const DELETE_BOOK = gql`
       title
       authors
     }
+  }
+`;
+
+export const AUTHORIZE_USER = gql`
+  query Query($authorizeToken: String) {
+    authorize(token: $authorizeToken) {
+      id
+      name
+      email
+      image
+      role
+    }
+  }
+`;
+
+export const UPDATE_USERROLE = gql`
+  mutation UpdateUserRole($email: String) {
+    id
   }
 `;

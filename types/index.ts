@@ -21,4 +21,5 @@ export type BookInput = {
   pageCount: string;
   authors: string;
   imageLinks: string;
+  amount: string;
 };
