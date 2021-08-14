@@ -27,7 +27,6 @@ export default function EditBookModal({
     bookDetails
   );
   const onEditSubmit = () => {
-    console.log({ bookDetailsForm });
     const {
       id,
       title,

@@ -23,3 +23,11 @@ export type BookInput = {
   imageLinks: string;
   amount: string;
 };
+
+export type User = {
+  id: string;
+  name: string;
+  role: string;
+  image: string;
+  email: string;
+};

@@ -1,14 +1,18 @@
-import { useMutation } from "@apollo/client";
 import { Dot, Button, Row, Text } from "@geist-ui/react";
 import { Layout } from "components";
-import { UPDATE_USERROLE } from "graphql/queries";
+import { signIn, useSession } from "next-auth/client";
+import { useRouter } from "next/router";
+import { isRoleVar } from "graphql/reactiveVar";
 
 export default function SignUp() {
-  const [updateUserRole] = useMutation(UPDATE_USERROLE);
-  const onRoleClick = (e: React.MouseEvent) => {
-    const { value: role } = e.target as HTMLButtonElement;
-    updateUserRole({ variables: { role } });
-  };
+  const [updateUserRole] = useMutation(UPDATE_USER, {
+    onError: (e) => console.log(JSON.stringify(e, null, 2)),
+    onCompleted: (e) => console.log(JSON.stringify(e, null, 2)),
+  });
+  const [session] = useSession();
+  const router = useRouter();
+  console.log({ session });
+  const onRoleClick = async (role: string) => {};
   return (
     <Layout isSignUp>
       <Row style={{ alignItems: "center" }}>
@@ -17,7 +21,7 @@ export default function SignUp() {
           Are you a student or a teacher?
         </Text>
         <Button
-          onClick={(e) => onRoleClick(e)}
+          onClick={() => onRoleClick("TEACHER")}
           size="small"
           auto
           style={{ margin: "0 1em" }}
@@ -25,7 +29,7 @@ export default function SignUp() {
           Teacher
         </Button>
         <Button
-          onClick={(e) => onRoleClick(e)}
+          onClick={() => onRoleClick("STUDENT")}
           size="small"
           type="default"
           auto

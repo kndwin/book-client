@@ -18,7 +18,7 @@ export default function Layout({
     <Page size="large">
       <Page.Header
         style={{
-          padding: "2em 0 1em 0",
+          padding: "2em 0 0 0",
           width: "100%",
           display: "flex",
           flexDirection: "row",
@@ -34,7 +34,7 @@ export default function Layout({
             auto
             onClick={() =>
               signIn("google", {
-                callbackUrl: `${process.env.NEXTAUTH_URL}`,
+                callbackUrl: `${process.env.NEXTAUTH_URL}/dashboard`,
               })
             }
             ghost

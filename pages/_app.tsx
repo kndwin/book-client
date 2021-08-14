@@ -4,14 +4,52 @@ import { ApolloProvider } from "@apollo/client";
 import {
   ApolloClient,
   InMemoryCache,
+  createHttpLink,
   NormalizedCacheObject,
 } from "@apollo/client";
 import { Provider as NextAuthProvider } from "next-auth/client";
 import "styles/globals.css";
+import { isRoleVar } from "graphql/reactiveVar";
+import { setContext } from "@apollo/client/link/context";
+
+const httpLink = createHttpLink({
+  uri: "http://localhost:4000",
+});
+
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  if (process.browser) {
+    const token = localStorage.getItem("token");
+    return {
+      headers: {
+        ...headers,
+        authorization: token ? `${token}` : "",
+      },
+    };
+  }
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+    },
+  };
+});
 
 export const client = new ApolloClient<NormalizedCacheObject>({
-  uri: "https://books-graphql.up.railway.app/",
-  cache: new InMemoryCache(),
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          isRoleVar: {
+            read: () => {
+              return isRoleVar();
+            },
+          },
+        },
+      },
+    },
+  }),
 });
 
 export default function Application({ Component, pageProps }: AppProps) {

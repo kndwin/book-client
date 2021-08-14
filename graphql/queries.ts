@@ -12,6 +12,34 @@ export const GET_BOOKS = gql`
       imageLink
       pageCount
       amount
+      userId
+    }
+  }
+`;
+
+export const GET_BOOKS_FROM_USER = gql`
+  query ($userId: String) {
+    booksFrom(userId: $userId) {
+      id
+      title
+      authors
+      description
+      publisher
+      publishedDate
+      imageLink
+      pageCount
+      amount
+    }
+  }
+`;
+
+export const GET_ALL_USERS = gql`
+  {
+    all {
+      id
+      name
+      image
+      email
     }
   }
 `;
@@ -42,20 +70,34 @@ export const DELETE_BOOK = gql`
   }
 `;
 
-export const AUTHORIZE_USER = gql`
-  query Query($authorizeToken: String) {
-    authorize(token: $authorizeToken) {
+export const GET_USER = gql`
+  query Query($email: String) {
+    me(email: $email) {
       id
-      name
       email
-      image
-      role
     }
   }
 `;
 
-export const UPDATE_USERROLE = gql`
-  mutation UpdateUserRole($email: String) {
-    id
+export const UPDATE_USER = gql`
+  mutation UpdateUserMutation($id: String!, $user: UserInput) {
+    updateUser(id: $id, user: $user) {
+      id
+      name
+      image
+      role
+      email
+    }
+  }
+`;
+
+export const GET_USER_WITH = gql`
+  query Query($user: UserInput) {
+    usersWith(user: $user) {
+      id
+      email
+      name
+      image
+    }
   }
 `;

@@ -9,19 +9,17 @@ type SearchProps = {
 
 export default function Search({ setBookList }: SearchProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const { state, bindings: inputBindings } = useInput("");
 
   const onSearchChange = async () => {
-    setSearchTerm(state);
     const url = new URL("https://www.googleapis.com/books/v1/volumes");
     // https://developers.google.com/books/docs/v1/reference/volumes/list
-    url.searchParams.set("q", searchTerm);
-    url.searchParams.set("maxResults", "20");
+    url.searchParams.set("q", state);
+    url.searchParams.set("maxResults", "24");
     url.searchParams.set("orderBy", "relevance");
     url.searchParams.set("projection", "full");
     url.searchParams.set("printType", "books");
-    if (searchTerm == undefined || searchTerm == "") {
+    if (state == undefined || state == "") {
       setBookList([]);
     } else {
       setIsLoading(true);
@@ -29,7 +27,12 @@ export default function Search({ setBookList }: SearchProps) {
       const { items: books } = await res.json();
       setBookList(books.map(({ volumeInfo }: any) => volumeInfo));
       setIsLoading(false);
-      // console.log({ books });
+    }
+  };
+
+  const onSearchEnterKey = (e: React.KeyboardEvent) => {
+    if (e.key == "Enter") {
+      onSearchChange();
     }
   };
 
@@ -38,16 +41,16 @@ export default function Search({ setBookList }: SearchProps) {
       <Input
         icon={<FiSearch />}
         width="100%"
-        placeholder="Search for a book!"
+        placeholder="Search anything! Book title, author... you name it!"
         clearable
-        size="medium"
+        size="large"
+        onKeyPress={(e) => onSearchEnterKey(e)}
         {...inputBindings}
       />
       <Button
-        type="secondary"
+        type="secondary-light"
         auto
         loading={isLoading}
-        size="small"
         style={{ marginLeft: "2em" }}
         onClick={() => onSearchChange()}
       >

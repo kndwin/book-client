@@ -1,5 +1,10 @@
-import { Text } from "@geist-ui/react";
+import { Row, Text } from "@geist-ui/react";
 
 export default function Unauthorized() {
-  return <Text h1>Unauthorized</Text>;
+  return (
+    <Row style={{ flexDirection: "column", alignItems: "center" }}>
+      <Text h1>Unauthorized</Text>
+      <Text>You are not allowed to see this page</Text>
+    </Row>
+  );
 }

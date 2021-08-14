@@ -4,22 +4,22 @@ type BookCardProps = {
   title: string;
   authors: string[];
   imageLinks: { smallThumbnail: string };
-  openModal: (index: number) => void;
   index: number;
+  focusBook: any;
 };
 
 export default function BookCard({
   title,
   authors,
   imageLinks,
-  openModal,
   index,
+  focusBook,
 }: BookCardProps) {
   return (
     <Card
       hoverable
       style={{ cursor: "pointer" }}
-      onClick={() => openModal(index)}
+      onClick={() => focusBook(index)}
     >
       <Card.Content
         style={{

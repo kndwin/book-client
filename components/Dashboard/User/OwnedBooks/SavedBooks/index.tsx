@@ -1,15 +1,22 @@
 import { useMutation, useQuery } from "@apollo/client";
+import { FiSearch } from "react-icons/fi";
 import { Table, Button, useToasts } from "@geist-ui/react";
-import { DELETE_BOOK, EDIT_BOOK, GET_BOOKS } from "graphql/queries";
+import { DELETE_BOOK, EDIT_BOOK, GET_BOOKS_FROM_USER } from "graphql/queries";
 import { useEffect, useState } from "react";
 import type { BookInput } from "types";
 import EditBookModal from "./EditBookModal";
 import RemoveConfirmationModal from "./RemoveConfirmationModal";
+import { useSession } from "next-auth/client";
 
-type SavedBooksProps = { forceUpdate: () => number };
-
-export default function SavedBooks({ forceUpdate }: SavedBooksProps) {
-  const { loading, error, data, refetch } = useQuery(GET_BOOKS, {
+export default function SavedBooks() {
+  const [session, loading] = useSession();
+  const {
+    loading: queryLoading,
+    error,
+    data,
+    refetch,
+  } = useQuery(GET_BOOKS_FROM_USER, {
+    variables: { userId: session?.user?.id },
     onError: (e) => console.log(JSON.stringify(e, null, 2)),
   });
   const [editModal, setEditModal] = useState(false);
@@ -17,7 +24,7 @@ export default function SavedBooks({ forceUpdate }: SavedBooksProps) {
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const [bookDetails, setBookDetails] = useState<BookInput>();
   const [deleteBook] = useMutation(DELETE_BOOK, {
-    refetchQueries: [{ query: GET_BOOKS }],
+    refetchQueries: [{ query: GET_BOOKS_FROM_USER }],
     onCompleted: () =>
       setToast({
         type: "error",
@@ -27,7 +34,7 @@ export default function SavedBooks({ forceUpdate }: SavedBooksProps) {
     errorPolicy: "all",
   });
   const [editBook] = useMutation(EDIT_BOOK, {
-    refetchQueries: [{ query: GET_BOOKS }],
+    refetchQueries: [{ query: GET_BOOKS_FROM_USER }],
     onCompleted: () =>
       setToast({
         type: "secondary",
@@ -40,7 +47,7 @@ export default function SavedBooks({ forceUpdate }: SavedBooksProps) {
 
   const removeBook = () => {
     deleteBook({
-      variables: { id: bookDetails?.id },
+      variables: { deleteBookId: bookDetails?.id },
     });
     setOpenConfirmationModal(false);
   };
@@ -71,20 +78,22 @@ export default function SavedBooks({ forceUpdate }: SavedBooksProps) {
 
   useEffect(() => {
     refetch();
-  }, [forceUpdate]);
+  }, []);
 
   useEffect(() => {
-    console.log({ data });
     if (data == undefined) {
     } else {
-      const { books } = data;
-      const tableToSet = books.map((book: BookInput) => {
+      console.log(data);
+      const { booksFrom } = data;
+
+      const tableToSet = booksFrom?.map((book: BookInput) => {
         return {
           ...book,
           updateButton,
           removeButton,
         };
       });
+
       setTable(tableToSet);
     }
   }, [data]);
