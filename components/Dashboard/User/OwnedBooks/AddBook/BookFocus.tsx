@@ -38,6 +38,7 @@ export default function BookFocus({
       setToast({ text: "Success! Book added", type: "secondary" }),
     onError: (e) => {
       setToast({
+        //@ts-ignore
         text: `An error occured: ${e?.networkError?.statusCode}: ${e?.networkError?.name} `,
         type: "error",
       });
