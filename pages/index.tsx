@@ -9,13 +9,12 @@ export default function Home() {
   const [session, loading] = useSession();
   const router = useRouter();
   useEffect(() => {
-    console.log({ session });
     // @ts-ignore
     localStorage.setItem("token", session?.jwtToken);
     if (session?.jwtToken) {
       router.push("/dashboard");
     }
-  }, [session]);
+  }, [session, router]);
 
   return (
     <Layout>

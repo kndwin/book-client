@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Row, Button, useInput, Input } from "@geist-ui/react";
+import { Avatar, Row, Button, useInput, Input } from "@geist-ui/react";
 import { FiSearch } from "react-icons/fi";
 import { GET_ALL_USERS, GET_BOOKS } from "graphql/queries";
 import { useSession } from "next-auth/client";
@@ -75,19 +75,16 @@ export default function FindBooks(props: FindBooksProps) {
               margin: ".8em 0",
               borderRadius: "10px",
               alignItems: "center",
+              padding: "0 1em",
             }}
           >
-            <img
-              style={{
-                height: "3em",
-                borderRadius: "50%",
-                margin: "1em",
-                border: "2px solid black",
-              }}
+            <Avatar
+              style={{ border: "2px solid black" }}
+              size="medium"
               src={image}
               alt="image"
             />
-            <p>{name}</p>
+            <p style={{ margin: "0 0 0 2em", fontWeight: "bold" }}>{name}</p>
             <div
               style={{
                 width: "100%",
@@ -103,8 +100,9 @@ export default function FindBooks(props: FindBooksProps) {
                       .toLowerCase()
                       .includes(searchedBook.toLowerCase())
                 )
-                .map(({ title, authors }: any) => (
+                .map(({ title, authors, id }: any) => (
                   <div
+                    key={id}
                     style={{
                       width: "fit-content",
                       border: "1px solid black",
