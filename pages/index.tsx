@@ -22,19 +22,13 @@ export default function Home() {
     setMounted(true);
   }, []);
 
-  if (mounted) {
+  if (!mounted) {
     return null;
   }
 
   return (
     <Layout>
-      {!!loading || !!session ? (
-        <Loading />
-      ) : (
-        <Text b size={30}>
-          🔨 Under developerment
-        </Text>
-      )}
+      {!!loading || !!session ? <Loading /> : <Text h1>Books</Text>}
     </Layout>
   );
 }
