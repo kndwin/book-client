@@ -3,11 +3,13 @@ import { Loading } from "components";
 import Layout from "components/Layout";
 import { useSession } from "next-auth/client";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [session, loading] = useSession();
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
+  useEffect(() => {}, []);
   useEffect(() => {
     // @ts-ignore
     localStorage.setItem("token", session?.jwtToken);
@@ -15,6 +17,14 @@ export default function Home() {
       router.push("/dashboard");
     }
   }, [session, router]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (mounted) {
+    return null;
+  }
 
   return (
     <Layout>

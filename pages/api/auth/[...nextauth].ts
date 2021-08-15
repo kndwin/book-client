@@ -56,7 +56,7 @@ export default NextAuth({
     Providers.Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOLGE_CLIENT_SECRET,
-      authorizationUrl: GOOGLE_AUTHORIZATION_URL,
+      // authorizationUrl: GOOGLE_AUTHORIZATION_URL,
     }),
   ],
   adapter: PrismaAdapter(prisma),
