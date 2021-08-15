@@ -13,7 +13,8 @@ import { isRoleVar } from "graphql/reactiveVar";
 import { setContext } from "@apollo/client/link/context";
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000",
+  //uri: "http://localhost:4000",
+  uri: "//https://books-graphql.up.railway.app/",
 });
 
 const authLink = setContext((_, { headers }) => {
