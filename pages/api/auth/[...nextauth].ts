@@ -2,8 +2,6 @@ import NextAuth, { Account, Profile, User } from "next-auth";
 import Providers from "next-auth/providers";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
-import { UPDATE_USER } from "graphql/queries";
-import { client } from "../../_app";
 
 const prisma = new PrismaClient();
 
@@ -66,17 +64,6 @@ export default NextAuth({
   debug: true,
   callbacks: {
     async signIn(user, account, profile) {
-      try {
-        console.log({ user, account, profile });
-        const res = await client.mutate({
-          mutation: UPDATE_USER,
-          variables: { user: { role: "USER" }, id: user.id },
-          errorPolicy: "all",
-        });
-        console.log({ res });
-      } catch (err) {
-        console.log(JSON.stringify(err, null, 2));
-      }
       return true;
     },
     async redirect(url, baseUrl) {
