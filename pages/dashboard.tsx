@@ -9,7 +9,6 @@ import {
 import { GET_ROLE } from "graphql/reactiveVar";
 import { useSession } from "next-auth/client";
 import { UPDATE_USER } from "graphql/queries";
-import { useEffect } from "react";
 import { useToasts } from "@geist-ui/react";
 
 export default function DashboardPage() {
@@ -32,21 +31,19 @@ export default function DashboardPage() {
     return <Loading />;
   }
 
-  useEffect(() => {
-    const updateUserFunction = async () => {
-      if (session?.user?.role) {
-        await updateUser({
-          variables: {
-            user: {
-              role: "USER",
-            },
-            id: session?.user?.id,
-          },
-        });
-      }
-    };
+  const updateUserFunction = async () => {
+    await updateUser({
+      variables: {
+        user: {
+          role: "USER",
+        },
+        id: session?.user?.id,
+      },
+    });
+  };
+  if (session?.user?.role) {
     updateUserFunction();
-  }, []);
+  }
 
   return (
     <Layout isSignedIn={role !== undefined}>
