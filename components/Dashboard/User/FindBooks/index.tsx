@@ -75,7 +75,7 @@ export default function FindBooks(props: FindBooksProps) {
 
       <Grid.Container gap={2} style={{ marginTop: "1em" }}>
         {booksData?.books?.map(
-          ({ title, authors, userId: bookUserId, imageLink }: any, index) => (
+					 ({ title, authors, userId: bookUserId, imageLink }: any, index: any) => (
             <>
               {`${title}${authors}`
                 .toLowerCase()
