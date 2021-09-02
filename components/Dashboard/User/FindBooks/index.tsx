@@ -1,20 +1,24 @@
 import { useQuery } from "@apollo/client";
-import { Avatar, Row, Button, useInput, Input } from "@geist-ui/react";
+import {
+  User,
+  Text,
+  Row,
+  Button,
+  useInput,
+  Input,
+  Grid,
+  Card,
+} from "@geist-ui/react";
 import { FiSearch } from "react-icons/fi";
 import { GET_ALL_USERS, GET_BOOKS } from "graphql/queries";
 import { useSession } from "next-auth/client";
 import React, { useEffect, useState } from "react";
+import { Image } from "@geist-ui/react";
 
 export interface FindBooksProps {}
 
 export default function FindBooks(props: FindBooksProps) {
-  const {
-    loading: getUserLoading,
-    error,
-    data,
-  } = useQuery(GET_ALL_USERS, {
-    onError: (e) => console.log(JSON.stringify(e, null, 2)),
-  });
+  const { data: userData } = useQuery(GET_ALL_USERS);
   const { data: booksData } = useQuery(GET_BOOKS);
   const [session, loading] = useSession();
   const { state, bindings: inputBindings } = useInput("");
@@ -22,12 +26,11 @@ export default function FindBooks(props: FindBooksProps) {
   const [searchLoading, setSearchLoading] = useState(false);
 
   useEffect(() => {
-    console.log({ loading, error, data });
-    console.log(data?.all);
-  }, [data, loading, error]);
+    console.log({ userData });
+  }, [userData]);
 
   useEffect(() => {
-    console.log(booksData);
+    console.log({ booksData });
   }, [booksData]);
 
   const onSearchChange = async () => {
@@ -41,7 +44,13 @@ export default function FindBooks(props: FindBooksProps) {
       onSearchChange();
     }
   };
-  return (
+
+	const getUserFromId = (userId: string) => {
+		return  userData?.all?.find(
+			({ id }: any) => id === userId
+		)
+	}
+	return (
     <div style={{ width: "100%" }}>
       <Row justify="space-between" style={{ width: "100%" }}>
         <Input
@@ -63,62 +72,42 @@ export default function FindBooks(props: FindBooksProps) {
           Search
         </Button>
       </Row>
-      {data?.all
-        ?.filter(({ id }: any) => id != session?.user?.id)
-        .map(({ name, image, id }: any) => (
-          <Row
-            key={image}
-            style={{
-              display: "flex",
-              width: "100%",
-              border: "1px solid black",
-              margin: ".8em 0",
-              borderRadius: "10px",
-              alignItems: "center",
-              padding: "0 1em",
-            }}
-          >
-            <Avatar
-              style={{ border: "2px solid black" }}
-              size="medium"
-              src={image}
-              alt="image"
-            />
-            <p style={{ margin: "0 0 0 2em", fontWeight: "bold" }}>{name}</p>
-            <div
-              style={{
-                width: "100%",
-                display: "inline-block",
-                padding: ".5em",
-              }}
-            >
-              {booksData?.books
-                ?.filter(
-                  ({ userId, title, authors }: any) =>
-                    userId === id &&
-                    `${title} ${authors}`
-                      .toLowerCase()
-                      .includes(searchedBook.toLowerCase())
-                )
-                .map(({ title, authors, id }: any) => (
-                  <div
-                    key={id}
-                    style={{
-                      width: "fit-content",
-                      border: "1px solid black",
-                      borderRadius: "10px",
-                      float: "left",
-                      margin: ".25em",
-                      padding: ".5em",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {title} - {authors}
-                  </div>
-                ))}
-            </div>
-          </Row>
-        ))}
+
+      <Grid.Container gap={2} style={{ marginTop: "1em" }}>
+        {booksData?.books?.map(
+          ({ title, authors, userId: bookUserId, imageLink }: any, index) => (
+            <>
+              {`${title}${authors}`
+                .toLowerCase()
+                .includes(searchedBook.toLowerCase()) && 
+								searchedBook.length > 0 &&
+									(
+                <Grid key={index} xs={12} sm={8} md={6} lg={6}>
+                  <Card shadow>
+                    <Image
+											sizes='md'
+                      alt="Book image"
+                      src={imageLink}
+											height={200}
+											width={200}
+											style={{ objectFit: "contain", margin: "1em 0 2em 0" }}
+										/>
+										<Text b h4 style={{ marginBottom: '0px'}}>
+											{title}
+										</Text>
+										<Text style={{ marginTop: '0px'}}>{authors}</Text>
+										<User
+											src={getUserFromId(bookUserId).image}
+											name={getUserFromId(bookUserId).name}
+										>
+										</User>
+									</Card>
+                </Grid>
+              )}
+            </>
+          )
+        )}
+      </Grid.Container>
     </div>
   );
 }
