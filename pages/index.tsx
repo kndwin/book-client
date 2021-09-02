@@ -1,5 +1,6 @@
 import { Text } from "@geist-ui/react";
 import { Loading } from "components";
+import {LandingPage} from "components/LandingPage";
 import Layout from "components/Layout";
 import { useSession } from "next-auth/client";
 import { useRouter } from "next/router";
@@ -28,7 +29,7 @@ export default function Home() {
 
   return (
     <Layout>
-      {!!loading || !!session ? <Loading /> : <Text h1>Books</Text>}
+			<LandingPage />
     </Layout>
   );
 }
